@@ -37,6 +37,28 @@ void log_msg(const char* msg)
     write(STDOUT_FILENO, msg, strlen(msg));
 }
 
+static const char* hex_alphabet = "0123456789ABCDEF";
+char* hexdump_int64_cdqe(char* buff, long* n) 
+{
+    char* b = (char*) n;
+    char* p = buff;
+    
+    for (int i = 7; i > 0; i--) 
+    {
+        *p   = hex_alphabet[ b[i] >> 4  ]; // high nibble
+        p[1] = hex_alphabet[ b[i] & 0xF ]; // low nibble
+        p[2] = 0x20;                    // space
+        p   += 3;
+    }
+
+    // last byte without space, null terminate
+    *p   = hex_alphabet[*b >> 4];
+    p[1] = hex_alphabet[*b & 0xF];
+    p[2] = 0;
+
+    return buff;
+}
+
 
 int main() 
 {
